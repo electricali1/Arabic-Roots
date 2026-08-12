@@ -1,85 +1,62 @@
 // ----- Variables ----- //
 let time = 20
 let currentTime = time
+let levelIndex = 0
+let level = 0
+let active = false
 // ----- 
 
 const questions = [
     {
-        wordOne: "كتاب",
-        wordTwo: "مكتبة",
-        wordThree: "كاتب",
+        words: ["كتاب", "مكتبة", "كاتب"],
         Root: "كتب",
     },
     {
-        wordOne: "مدرسة",
-        wordTwo: "تدريس",
-        wordThree: "مدرس",
+        words: ["مدرسة", "تدريس", "مدرس"],
         Root: "درس",
     },
     {
-        wordOne: "عالم",
-        wordTwo: "معلم",
-        wordThree: "تعليم ",
+        words: ["عالم", "معلم", "تعليم"],
         Root: "علم",
     },
     {
-        wordOne: "عامل",
-        wordTwo: "معمل",
-        wordThree: "استعمال",
+        words: ["عامل", "معمل", "استعمال"],
         Root: "عمل"
     },
     {
-        wordOne: "ملعب",
-        wordTwo: "لاعب",
-        wordThree: "لعبة",
+        words: ["ملعب", "لاعب", "لعبة"],
         Root: "لعب"
     },
     {
-        wordOne: "سماع",
-        wordTwo: "مسموع",
-        wordThree: "مستمع",
+        words: ["سماع", "مسموع", "مستمع"],
         Root: "سمع"
     },
     {
-        wordOne: "مشروب",
-        wordTwo: "شراب",
-        wordThree: "شارب",
+        words: ["مشروب", "شراب", "شارب"],
         Root: "شرب"
     },
     {
-        wordOne: "مكسور",
-        wordTwo: "كسارة",
-        wordThree: "انكسار",
+        words: ["مكسور", "كسارة", "انكسار"],
         Root: "كسر"
     },
     {
-        wordOne: "مفتاح",
-        wordTwo: "افتتاح",
-        wordThree: "فاتحة",
+        words: ["مفتاح", "افتتاح", "فاتحة"],
         Root: "فتح"
     },
     {
-        wordOne: "مجلس",
-        wordTwo: "جالس",
-        wordThree: "جلسة",
+        words: ["مجلس", "جالس", "جلسة"],
         Root: "جلس"
     },
     {
-        wordOne: "ضاحك",
-        wordTwo: "مضحك",
-        wordThree: "ضحكة",
+        words: ["ضاحك", "مضحك", "ضحكة"],
         Root: "ضحك"
     },
     {
-        wordOne: "مطبخ",
-        wordTwo: "طباخ",
-        wordThree: "طبخة",
+        words: ["مطبخ", "طباخ", "طبخة"],
         Root: "طبخ"
     },
     {
-        wordOne: "خباز",
-        wordTwo: "مخبز",
-        wordThree: "خبزة",
+        words: ["خباز", "مخبز", "خبزة"],
         Root: "خبز"
     },
 ]
@@ -89,6 +66,11 @@ const timerElement = document.querySelector('#timer')
 const questionWordsElement = document.querySelector('#questionWords')
 const playerInputElement = document.querySelector('#playerInput')
 
+
+function randomize() {
+    questions.sort(() => Math.random() - .5)
+}
+
 // --- functions --- //
 function currentTimeFunc() {
     currentTime = currentTime - 1
@@ -97,6 +79,7 @@ function currentTimeFunc() {
     if (currentTime <= 0) {
         clearInterval(timeInterval);
         console.log("Time is up !")
+        resetLevel()
         return
     }
 }
@@ -106,12 +89,71 @@ function getRandomNum(min, max) {
 }
 function startFunc() {
     console.log("starting the game..")
-    timeInterval = setInterval(currentTimeFunc, 1000);
-    let RandomNum = getRandomNum(0, questions.length);
-    console.log(questions[RandomNum].wordOne + " | " + questions[RandomNum].wordTwo + " | " + questions[RandomNum].wordThree)
-    questionWordsElement.textContent = questions[RandomNum].wordOne + " | " + questions[RandomNum].wordTwo + " | " + questions[RandomNum].wordThree
+    if (!active) {
+        currentTime = time
+        timeInterval = setInterval(currentTimeFunc, 1000);
+        leveling()
+        active = true
+    }
 }
+function leveling() {
+    console.log("LEVEL " + level)
+    //let RandomNum = getRandomNum(0, questions.length); (old way, not used now)
+    randomize()
+    if (level >= 0 && level <= 11) {
+        questions.words.sort(() => Math.random() - .5)
+        console.log(questions[levelIndex].words.join(" | "))
+        questionWordsElement.textContent = questions[levelIndex].words.join(" | ")
+    } else if (level >= 11 && level <= 21) {
+        questions.words.sort(() => Math.random() - .5)
+        questions[levelIndex].words.pop()
+        console.log(questions[levelIndex].words.join(" | "))
+        questionWordsElement.textContent = questions[levelIndex].words.join(" | ")
+    } else if (level >= 21) {
+        questions.words.sort(() => Math.random() - .5)
+        questions[levelIndex].words.pop()
+        questions[levelIndex].words.pop()
+        console.log(questions[levelIndex].words[0])
+        questionWordsElement.textContent = questions[levelIndex].wordOne
+    }
+}
+function resetLevel() {
+    level = 0
+    currentTime = time
+    active = false
+    questionWordsElement.textContent = "click START to start the game"
+}
+function checkEnter(event) {
+    if (event.code == 'Enter') {
+        console.log("You just pressed Enter")
+        console.log(playerInputElement.value)
+        console.log(questions[levelIndex].Root)
+        if (playerInputElement.value === questions[levelIndex].Root) {
 
+            console.log("Your Answer is True")
+            currentTime += 5
+            level = level + 1
+            leveling()
+        }
+        else {
+            console.log("Your Answer is Wrong")
+        }
+        playerInputElement.value = ''
+    }
+}
 // --- event listener --- //
 StartButtonElement.addEventListener('click', startFunc)
+
+// document.addEventListener('keydown', (event) => {
+//     console.log(event)
+// })
+document.addEventListener('keydown', checkEnter)
+
+
+// how to make showing less than 3 words also randomized
+// when user press start, he can't press it again, also add an exit button, so when the user press exit it exit the main menu
+// when I press enter, I want the input to be empty again, so i don't have to delete my previous answer.
+// I don't want the same question to repeat again.
+// add a level indicator as p in html to display text content.
+
 
