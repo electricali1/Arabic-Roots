@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arabic Roots Game</title>
     <script defer src="./app.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <button id="start-button"> start </button> <button id="exit-button"> return to main menu </button>
-    <p id="levelIndicator"> </p>
-    <p id="timer">10</p>
-    <p id="questionWords"> </p>
-    <input id="playerInput"> </input>
-</body>
+    <div class="game-container">
+        <h1>Arabic Roots Game</h1>
 
+        <div class="top-bar">
+            <span id="levelIndicator">LEVEL 0</span>
+            <div id="timer-container">
+                <span id="timer">15</span>s
+            </div>
+        </div>
+
+        <p id="questionWords">Click Start to play</p>
+
+        <input id="playerInput" type="text" placeholder="Type answer here...">
+
+        <div class="buttons-row">
+            <button id="start-button">Start</button>
+            <button id="exit-button">Exit</button>
+        </div>
+    </div>
+
+</body>
 </html>
